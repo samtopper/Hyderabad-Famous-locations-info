@@ -1,3 +1,6 @@
+
+// This file contains a locations array holding the details of each location.
+
 var locations = [{
       placeName : "Charminar",
       position : {lat: 17.361555, lng: 78.474666},

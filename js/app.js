@@ -1,8 +1,10 @@
+
 var map;
+
 // executes when map fails to load.
 function loadingError() {
     "use strict";
-    document.getElementById('error').innerHTML = "<h2>Google Maps is not loading. Please check your internet connection.</h2>";
+    document.getElementById('error').innerHTML = "<h3>Google Maps is not loading. Please check your internet connection.</h3>";
 }
 
 //----ViewModel ---- //
@@ -23,7 +25,7 @@ var ViewModel = function(){
   var self = this;
 
   //Make the model array into a knockout observable array.
-  self.placeLocation = ko.observableArray(locations);
+  self.observableLocations = ko.observableArray(locations);
 
   //This stores the data in the input box into an observable string.
   self.filter = ko.observable('');
@@ -33,8 +35,9 @@ var ViewModel = function(){
   var highlightedIcon = makeMarkerIcon('AAE12C');
 
   // This function takes in a color, and then creates a new marker icon of that color.
+  var markerImage;
   function makeMarkerIcon(markerColor) {
-   var markerImage = new google.maps.MarkerImage(
+   markerImage = new google.maps.MarkerImage(
     'https://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
     '|40|_|%E2%80%A2',
     new google.maps.Size(22, 35),  // 22 px wide by 35 px high.
@@ -44,15 +47,12 @@ var ViewModel = function(){
     return markerImage;
   }
 
-
-
-
-
-  //Loop over all model data elements and give them a marker
-  for (i=0; i<locations.length; i++) {
-    var name = locations[i].placeName;
-    var position = locations[i].position;
-    var description = locations[i].description;
+  //Looping over the model elements and giving them a marker.
+  var name, position, description;
+  for (i=0, len=locations.length; i<len; i++) {
+    name = locations[i].placeName;
+    position = locations[i].position;
+    description = locations[i].description;
 
     marker = new google.maps.Marker({
       map: map,
@@ -64,7 +64,7 @@ var ViewModel = function(){
     });
 
     //push new marker to the array of markers
-    self.placeLocation()[i].marker = marker;
+    self.observableLocations()[i].marker = marker;
 
     //add click listener to open window for this marker
     marker.addListener('click', function() {
@@ -104,7 +104,7 @@ var ViewModel = function(){
 
 //function to filter the list!
   self.filterList = ko.computed(function() {
-    return ko.utils.arrayFilter(self.placeLocation(), function(myPlace) {
+    return ko.utils.arrayFilter(self.observableLocations(), function(myPlace) {
       var matched = myPlace.placeName.toLowerCase().indexOf(self.filter().toLowerCase()) >= 0;
       myPlace.marker.setVisible(matched);
       return matched;
@@ -115,8 +115,8 @@ var ViewModel = function(){
   var fsquare_secret = 'BU5ATIO30ETMIMAUGWVCXLBZGIMDQJAZ1ASLKT5NVURXS01W';
 
   var requestTimeout = setTimeout(function(){
-      // $wikiElem.text("failed to get wikipedia resources.");
       console.log("failed to get resources");
+      alert("failed to get resources from foursquare.");
   }, 8000);
 
   locations.forEach(function(item){
@@ -137,14 +137,11 @@ var ViewModel = function(){
         //self.populateInfoWindow(marker.content, infoWindow);
         infoWindow.setContent(marker.content);
 
-
         clearTimeout(requestTimeout);
     });
   });
 
 }
-
-
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";

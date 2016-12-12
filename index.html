@@ -3,15 +3,19 @@
    <head>
       <title>My Neighborhood Map</title>
       <meta name='viewport' content='width=device-width, initial-scale=1'>
-      <link rel="stylesheet" href="styles/styles.css" type="text/css">
+      <link rel="stylesheet" href="styles/styles.css">
    </head>
 
    <body>
-      <header id='title'><h2>Historical Places in Hyderabad.</h2></header>
-      <div id='filter-container'>
 
-         <div id="mySidenav" class="sidenav" >
+      <div id="container">
+         <span id="sidebar" onclick="openNav()">&#9776; open</span>
+         <header id='title'>
+            <h2>Historical Places in Hyderabad.</h2>
+         </header>
 
+         <aside id="mySidenav" class="sidenav" >
+            <!-- side bar is implemented by observing code on w3schools.com -->
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <h2 id='filter-title'>Search:</h2>
             <input data-bind="textInput: filter, valueUpdate: 'afterkeydown'" placeholder="type here..."></input>
@@ -19,14 +23,13 @@
             <ul class='listedItems' data-bind='foreach: filterList'>
                <li> <a class='placeListItems' data-bind='text: placeName, click: $parent.showMarker'> </a> </li>
             </ul>
+         </aside>
 
-         </div>
-         <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+
+
+         <div id='error'></div>
+         <div id='map'></div>
       </div>
-
-      <div id='error'></div>
-      <div id='map'></div>
-
 
       <script src="js/jquery.js"></script>
       <script src="js/knockout.js"></script>
@@ -34,5 +37,6 @@
       <script src='js/app.js'></script>
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsRzakuZJvHI9grHFXKBKzmZA_gjd41cY&v=3&callback=initMap" onerror="loadingError()"></script>
+
    </body>
 </html>

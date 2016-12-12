@@ -2,9 +2,6 @@ html,
 body {
     font-family: "Comic Sans MS", cursive, sans-serif;
     height: 100%;
-    margin: 0;
-    padding: 0;
-    /*background-color: #D2C2C2;*/
 }
 
 #title {
@@ -13,8 +10,7 @@ body {
     color: #943131;
 }
 
-#filter-container {
-    /*width: 50%;*/
+#container {
     background: #fff;
     height: 100%;
     line-height: 35px;
@@ -24,6 +20,13 @@ body {
 
 #filter-title {
     padding-left: 5px;
+}
+
+#sidebar {
+    font-size: 30px;
+    cursor: pointer;
+    float: left;
+    color: #943131;
 }
 
 input {
@@ -39,14 +42,12 @@ input {
 }
 
 #map {
-    height: 90%;
+    height: 80%;
     position: absolute;
-    left: 120px;
-    right: 0px;
-    bottom: 0px;
+    left: 80px;
+    right: 5px;
+    bottom: 5px;
 }
-
-
 
 .sidenav {
     height: 100%;
@@ -82,7 +83,35 @@ input {
     margin-left: 50px;
 }
 
-/*@media screen and (max-height: 450px) {
+@media screen and (max-width: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
-}*/
+
+  body {
+    background-color: blue;
+  }
+
+  #map {
+    height: 70%;
+    position: absolute;
+    left: 10px;
+    right: 3px;
+    bottom: 3px;
+    }
+
+    #title {
+    text-align: left;
+    font-style: italic;
+    color: #943131;
+    font-size: 15px;
+
+    }
+
+    #sidebar {
+        font-size: 20px;
+        cursor: pointer;
+        float: left;
+        color: #943131;
+        margin-right: 10px;
+    }
+}

@@ -24,7 +24,7 @@ Check this link for live version of map. [Historical-places-in-Hyderabad](https:
 * you can either host locally using python 'simpleHTTPServer'.
 
 
-### The application is under progress, new features will be added regularly. Suggestions are highly appreciated.
+### The application is under progress, new features will be added soon. Suggestions are highly appreciated.
 
 ## Resources
 
@@ -34,8 +34,8 @@ Check this link for live version of map. [Historical-places-in-Hyderabad](https:
 
 * [Udacity course #3.](https://www.udacity.com/course/google-maps-apis--ud864)
 
-[Udacity forums.](https://discussions.udacity.com/t/how-to-convert-mvo-pattern-code-into-knockout-pattern/202199)
+* [Udacity forums.](https://discussions.udacity.com/t/how-to-convert-mvo-pattern-code-into-knockout-pattern/202199)
 
-[Google Maps API.](https://developers.google.com/maps/documentation/javascript/)
+* [Google Maps API.](https://developers.google.com/maps/documentation/javascript/)
 
-[Stack overflow.](http://stackoverflow.com/questions/tagged/ajax)
+* [Stack overflow.](http://stackoverflow.com/questions/tagged/ajax)

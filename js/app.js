@@ -82,8 +82,6 @@ var ViewModel = function() {
       !item.rating ? item.rating = data.response.groups[0].items[0]
         .venue.rating : item.rating = "no rating available.";
       console.log(item.rating);
-      // !item.photos ? item.photos = data.response.groups[0].items[0]
-      //   .venue.photos : item.photos = "no photo to display.";
 
       // stores the content to be displayed on the infowindow.
       contentString = '<br><div class="labels">' +

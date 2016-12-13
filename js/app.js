@@ -1,5 +1,5 @@
 
-var map;
+var map, marker;
 
 // executes when map fails to load.
 function loadingError() {
@@ -18,6 +18,7 @@ function initMap() {
   var bounds = new google.maps.LatLngBounds();
   infoWindow = new google.maps.InfoWindow();
   ko.applyBindings(new ViewModel());
+
 }
 
 
@@ -25,10 +26,8 @@ var ViewModel = function(){
   var self = this;
 
   //Make the model array into a knockout observable array.
-  self.observableLocations = ko.observableArray(locations);
-
-  //This stores the data in the input box into an observable string.
-  self.filter = ko.observable('');
+  this.observableLocations = ko.observableArray(locations);
+  console.log(this.observableLocations());
 
   var defaultIcon = makeMarkerIcon('1D97C4');
   // Highlighting the marker when the user mouses over.
@@ -47,28 +46,51 @@ var ViewModel = function(){
     return markerImage;
   }
 
-  //Looping over the model elements and giving them a marker.
-  var name, position, description;
-  for (i=0, len=locations.length; i<len; i++) {
-    name = locations[i].placeName;
-    position = locations[i].position;
-    description = locations[i].description;
-
+  self.observableLocations().forEach(function(item) {
+    // Defining markers for each place.
     marker = new google.maps.Marker({
-      map: map,
-      position: position,
-      title: name,
-      description: description,
-      icon: defaultIcon,
-      animation: google.maps.Animation.DROP
+        position: new google.maps.LatLng(item.position.lat, item.position.lng),
+        map: map,
+        animation: google.maps.Animation.DROP
+    });
+    item.marker = marker;
+
+    // my Foursquare API keys. Create your own keys from https://developer.foursquare.com/
+    var fsquare_id = 'K3QM5R5HR0FLEUVDY2EU5PWVXL5TAGAC2EAKLVJ5UVZHSSDA';
+    var fsquare_secret = 'BU5ATIO30ETMIMAUGWVCXLBZGIMDQJAZ1ASLKT5NVURXS01W';
+    // declaring the contentString as observable, so that every infowindow displays its content.
+    var contentString = ko.observable();
+    // AJAX request for foursquare data.
+    $.ajax({
+        url: 'https://api.foursquare.com/v2/venues/explore',
+        dataType: 'jsonp',
+        type: "GET",
+        cache: 'false',
+        data: 'limit=1&ll=' + item.position.lat + ',' + item.position.lng + '&query=' + item.placeName + '&client_id=' + fsquare_id + '&client_secret=' + fsquare_secret + '&v=20140806&m=foursquare'
+    }).done(function(data){
+        !item.rating ? item.rating = data.response.groups[0].items[0].venue.rating : item.rating = "no rating available.";
+        console.log(item.rating);
+        !item.photos ? item.photos = data.response.groups[0].items[0].venue.photos : item.photos = "no photo to display.";
+
+        // stores the content to be displayed on the infowindow.
+        contentString = '<br><div class="labels">' + '<div class="title">' + item.placeName + '</div><div class="photo">Photo: ' + item.photos + '</div><div class="rating">Foursquare rating: ' + item.rating + '</div><p>' + item.description + '</p>' + '</div>';
+
+
+        //self.populateInfoWindow(marker.content, infoWindow);
+    }).fail(function(jqXHR, textStatus){
+      console.log("failed to get resources");
+      //alert("failed to get resources from Foursquare.");
     });
 
-    //push new marker to the array of markers
-    self.observableLocations()[i].marker = marker;
+    google.maps.event.addListener(item.marker, 'click', function(){
+      infoWindow.open(map, this);
 
-    //add click listener to open window for this marker
-    marker.addListener('click', function() {
-      self.populateInfoWindow(this, infoWindow);
+      item.marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function(){
+        item.marker.setAnimation(null);
+      }, 1400);
+
+      infoWindow.setContent(contentString);
     });
 
     // Two event listeners to change the colors back and forth.
@@ -78,30 +100,16 @@ var ViewModel = function(){
     marker.addListener('mouseout', function() {
       this.setIcon(defaultIcon);
     });
-  }
+  });
 
-  //Creates an infoWindow for each marker.
-  self.populateInfoWindow = function(marker, infoWindow) {
-    if (infoWindow.marker != marker) {
-      infoWindow.marker = marker;
-      //marker.content = '<br><div class="labels">' + '<div class="title">' + item.placeName + '</div><div class="rating">Foursquare rating: ' + item.rating + '</div><p>' + item.description + '</p>' + '</div>';
-      // infoWindow.setContent(marker.content);
-      // infoWindow.setContent('<div><p>' + marker.title + '</p> <p>' + marker.description + '</p> </div>');
-      infoWindow.open(map, marker);
-      infoWindow.addListener('closeClick', function() {
-        infoWindow.setMarker(null);
-      })
-      infoWindow.marker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(function(){
-        marker.setAnimation(null);
-      }, 1400);
-    }
-  };
   // to display the clicked list item on map.
   self.showMarker = function(clickedItem) {
-    self.populateInfoWindow(clickedItem.marker, infoWindow);
-  }
+    google.maps.event.trigger(clickedItem.marker, 'click');
+    // self.populateInfoWindow(clickedItem.marker, infoWindow);
+  };
 
+//This stores the data in the input box into an observable string.
+  self.filter = ko.observable('');
 //function to filter the list!
   self.filterList = ko.computed(function() {
     return ko.utils.arrayFilter(self.observableLocations(), function(myPlace) {
@@ -111,37 +119,7 @@ var ViewModel = function(){
     });
   });
 
-  var fsquare_id = 'K3QM5R5HR0FLEUVDY2EU5PWVXL5TAGAC2EAKLVJ5UVZHSSDA';
-  var fsquare_secret = 'BU5ATIO30ETMIMAUGWVCXLBZGIMDQJAZ1ASLKT5NVURXS01W';
-
-  var requestTimeout = setTimeout(function(){
-      console.log("failed to get resources");
-      alert("failed to get resources from foursquare.");
-  }, 8000);
-
-  locations.forEach(function(item){
-    $.ajax({
-        url: 'https://api.foursquare.com/v2/venues/explore',
-        dataType: 'jsonp',
-        type: "GET",
-        cache: 'false',
-        data: 'limit=1&ll=' + item.position.lat + ',' + item.position.lng + '&query=' + item.placeName + '&client_id=' + fsquare_id + '&client_secret=' + fsquare_secret + '&v=20140806&m=foursquare'
-    }).done(function(data){
-        item.rating = data.response.groups[0].items[0].venue.rating;
-        console.log(item.rating);
-        if (!item.rating) {
-            item.rating = 'No rating in foursquare';
-        }
-        infoWindow.open(map, marker);
-        marker.content = '<br><div class="labels">' + '<div class="title">' + item.placeName + '</div><div class="rating">Foursquare rating: ' + item.rating + '</div><p>' + item.description + '</p>' + '</div>';
-        //self.populateInfoWindow(marker.content, infoWindow);
-        infoWindow.setContent(marker.content);
-
-        clearTimeout(requestTimeout);
-    });
-  });
-
-}
+};
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";

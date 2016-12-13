@@ -29,8 +29,8 @@ var ViewModel = function() {
   var self = this;
 
   //Make the model array into a knockout observable array.
-  this.observableLocations = ko.observableArray(locations);
-  console.log(this.observableLocations());
+  self.observableLocations = ko.observableArray(locations);
+  console.log(self.observableLocations());
 
   var defaultIcon = makeMarkerIcon('1D97C4');
   // Highlighting the marker when the user mouses over.
@@ -82,10 +82,15 @@ var ViewModel = function() {
       !item.rating ? item.rating = data.response.groups[0].items[0]
         .venue.rating : item.rating = "no rating available.";
       console.log(item.rating);
+      console.log(data.response);
+
+      !item.photos ? item.photos = data.response.groups[0].items[0].venue.photos :
+      item.photos = "no photo available.";
 
       // stores the content to be displayed on the infowindow.
       contentString = '<br><div class="labels">' +
         '<div class="title">' + item.placeName +
+        '</div><div class="photo">Photo: ' + item.photos +
         '</div><div class="rating">Foursquare rating: ' + item.rating +
         '</div><p>' + item.description + '</p>' + '</div>';
 

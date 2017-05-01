@@ -6,7 +6,7 @@
 
 ## Running the app
 
-Check this link for live version of map. [Historical-places-in-Hyderabad](https://samtopper.github.io/my-map-1/)
+Check this link for live version of map. [Historical-places-in-Hyderabad](https://samtopper.github.io/Hyderabad-Famous-locations-info/)
 
 ## How to Use
 

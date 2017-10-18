@@ -1,4 +1,4 @@
-# Historical places in Hyderabad, Telangana.
+# Places to visit in Hyderabad, Telangana.
 
 ## Overview
 
